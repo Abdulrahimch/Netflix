@@ -53,3 +53,26 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
         res.status(400).send(e);
     }
 });
+
+exports.userStat = asyncHandler(async (req, res, next) => {
+  const stat = await User.aggregate([
+    {
+      $project: 
+        {
+          month: { $month: '$createdAt' }
+        }
+    },
+    {
+      $group: 
+        {
+          _id: '$month', total: { $sum: 1 }
+        }
+    }
+  
+  ]);
+  res.status(200).json({
+    stat
+  });
+  });
+
+
